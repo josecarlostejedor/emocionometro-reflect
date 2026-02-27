@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import sqlite3
-import time
 import os
 
 # 1. Configuración de la página
@@ -11,7 +10,7 @@ st.set_page_config(
     layout="wide"
 )
 
-# 2. Estilos CSS para mantener la estética "Elegante y Visual"
+# 2. Estilos CSS (Elegante y Visual)
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700;900&display=swap');
@@ -52,7 +51,6 @@ st.markdown("""
         margin-bottom: 2rem;
     }
 
-    /* Estilo de los botones de emoción */
     div.stButton > button {
         background-color: rgba(255, 255, 255, 0.6) !important;
         backdrop-filter: blur(10px);
@@ -86,7 +84,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# 3. Gestión de Base de Datos (SQLite)
+# 3. Gestión de Base de Datos
 def init_db():
     conn = sqlite3.connect('votos_ef.db')
     c = conn.cursor()
@@ -108,23 +106,29 @@ def get_results():
     conn.close()
     return df
 
+def reset_db():
+    conn = sqlite3.connect('votos_ef.db')
+    c = conn.cursor()
+    c.execute("DELETE FROM votos")
+    conn.commit()
+    conn.close()
+
 init_db()
 
-# 4. Cabecera con Logo y Título
+# 4. Cabecera
 col_logo, col_text = st.columns([1, 4])
-
 with col_logo:
     if os.path.exists("logo.png"):
         st.image("logo.png", width=160)
     else:
-        st.info("Sube 'logo.png' a GitHub")
+        st.info("Sube 'logo.png'")
 
 with col_text:
     st.markdown('<h1 class="main-title">Emocionómetro</h1>', unsafe_allow_html=True)
     st.markdown('<p class="event-name">Día de la Educación Física en la Calle</p>', unsafe_allow_html=True)
     st.markdown('<p class="slogan">"Moviendo cuerpos, conectando mentes. La calle es salud mental en movimiento"</p>', unsafe_allow_html=True)
 
-# 5. Lógica de Navegación
+# 5. Navegación
 if 'page' not in st.session_state:
     st.session_state.page = 'votar'
 
@@ -165,16 +169,23 @@ else:
     st.markdown(f"### Marcador en Tiempo Real (Total: {total} votos)")
     
     if not df.empty:
-        # Gráfico atractivo
         st.bar_chart(df.set_index('emocion')['conteo'])
-        
-        # Lista detallada
         for _, row in df.iterrows():
             st.write(f"**{row['emocion'].capitalize()}**: {row['conteo']} votos")
     else:
         st.write("Esperando el primer voto...")
 
-# 8. Pie de página
+# 8. Panel de Administración (Reinicio)
+with st.expander("🛠️ Administración"):
+    password = st.text_input("Introduce el código para reiniciar", type="password")
+    if password == "1234":
+        if st.button("⚠️ REINICIAR TODOS LOS VOTOS A 0"):
+            reset_db()
+            st.success("Marcador reiniciado correctamente.")
+            time_to_wait = 2
+            st.rerun()
+
+# 9. Pie de página
 st.markdown("""
 <div class="footer">
     © 2026 Día de la Educación Física en la Calle • Construido con Pasión. (Dpto. de EF del IES Lucía de Medrano)
