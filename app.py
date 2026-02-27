@@ -3,13 +3,11 @@ import streamlit.components.v1 as components
 import sqlite3
 import pandas as pd
 import os
-import json
 import base64
 
-# --- CONFIGURACIÓN DE PÁGINA ---
+# --- 1. CONFIGURACIÓN DE PÁGINA (OCULTA TODO STREAMLIT) ---
 st.set_page_config(page_title="Emocionómetro EF", layout="wide", initial_sidebar_state="collapsed")
 
-# Ocultar rastro de Streamlit
 st.markdown("""
     <style>
         #MainMenu, footer, header {visibility: hidden;}
@@ -19,7 +17,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- BASE DE DATOS ---
+# --- 2. BASE DE DATOS ---
 DB_PATH = os.path.join(os.getcwd(), 'emocionometro.db')
 
 def init_db():
@@ -51,30 +49,33 @@ def reset_db():
 
 init_db()
 
-# --- GESTIÓN DE LOGO ---
+# --- 3. LÓGICA DE PROCESAMIENTO (Query Params) ---
+# Esta es la parte que hace que los botones FUNCIONEN
+params = st.query_params
+
+if "vote" in params:
+    voto = params["vote"]
+    add_vote(voto)
+    # Limpiamos y redirigimos a resultados
+    st.query_params.clear()
+    st.query_params["view"] = "results"
+    st.rerun()
+
+if "reset" in params and params["reset"] == "true":
+    reset_db()
+    st.query_params.clear()
+    st.rerun()
+
+current_view = params.get("view", "vote")
+
+# --- 4. GESTIÓN DE LOGO ---
 def get_base64_logo():
     if os.path.exists("logo.png"):
         with open("logo.png", "rb") as f:
             return f"data:image/png;base64,{base64.b64encode(f.read()).decode()}"
     return "https://placehold.co/200x200?text=LOGO+EF"
 
-# --- LÓGICA DE COMUNICACIÓN ---
-query_params = st.query_params
-
-if "vote" in query_params:
-    add_vote(query_params["vote"])
-    st.query_params.clear()
-    st.query_params["view"] = "results"
-    st.rerun()
-
-if "reset" in query_params and query_params["reset"] == "true":
-    reset_db()
-    st.query_params.clear()
-    st.rerun()
-
-current_view = query_params.get("view", "vote")
-
-# --- RENDERIZADO DE LA INTERFAZ ESPECTACULAR ---
+# --- 5. RENDERIZADO DE LA INTERFAZ (HTML + TAILWIND) ---
 def render_ui():
     results = get_results_data()
     total_votos = sum(r['count'] for r in results)
@@ -93,6 +94,7 @@ def render_ui():
 
     results_map = {r['emocion']: r['count'] for r in results}
     
+    # Generamos los enlaces con target="_top" para que Streamlit los detecte
     html_content = f"""
     <!DOCTYPE html>
     <html lang="es">
@@ -106,14 +108,14 @@ def render_ui():
             .glass {{ background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.5); }}
             .blob {{ position: fixed; border-radius: 50%; filter: blur(80px); opacity: 0.15; z-index: -1; animation: pulse 10s infinite alternate; }}
             @keyframes pulse {{ from {{ transform: scale(1); }} to {{ transform: scale(1.1); }} }}
-            .card-btn {{ transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; }}
+            .card-btn {{ transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); text-decoration: none; color: inherit; display: flex; }}
             .card-btn:hover {{ transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); background: white; }}
             .hidden {{ display: none; }}
         </style>
     </head>
     <body>
         <div class="blob w-96 h-96 bg-cyan-400 -top-20 -left-20"></div>
-        <div class="blob w-96 h-96 bg-pink-500 top-1/2 -right-20"></div>
+        <div class="blob w-96 h-96 bg-pink-500 top-1/2 -right-20" style="background-color: #ec008c;"></div>
         <div class="blob w-80 h-80 bg-lime-400 bottom-0 left-1/4"></div>
 
         <div class="max-w-6xl mx-auto p-6 md:p-10 min-h-screen flex flex-col">
@@ -127,8 +129,8 @@ def render_ui():
                     </div>
                 </div>
                 <div class="flex gap-4">
-                    <button onclick="changeView('vote')" class="px-6 py-2 rounded-full border border-black/10 font-bold uppercase text-xs tracking-widest hover:bg-black hover:text-white transition">Votar</button>
-                    <button onclick="changeView('results')" class="px-6 py-2 rounded-full border border-black/10 font-bold uppercase text-xs tracking-widest hover:bg-black hover:text-white transition">Resultados</button>
+                    <a href="?view=vote" target="_top" class="px-6 py-2 rounded-full border border-black/10 font-bold uppercase text-xs tracking-widest hover:bg-black hover:text-white transition">Votar</a>
+                    <a href="?view=results" target="_top" class="px-6 py-2 rounded-full border border-black/10 font-bold uppercase text-xs tracking-widest hover:bg-black hover:text-white transition">Resultados</a>
                     <button onclick="adminReset()" class="p-2 rounded-full border border-black/10 hover:bg-red-500 hover:text-white transition opacity-20 hover:opacity-100"><i data-lucide="rotate-ccw" class="w-4 h-4"></i></button>
                 </div>
             </header>
@@ -137,10 +139,10 @@ def render_ui():
                 <h2 class="text-3xl md:text-5xl font-bold text-gray-800">¿Cómo te sientes hoy?</h2>
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
                     {"".join([f'''
-                    <div onclick="vote('{e['id']}')" class="card-btn glass {e['bg']} p-8 rounded-[2.5rem] flex flex-col items-center justify-center text-center">
+                    <a href="?vote={e['id']}" target="_top" class="card-btn glass {e['bg']} p-8 rounded-[2.5rem] flex-col items-center justify-center text-center">
                         <i data-lucide="{e['icon']}" class="w-12 h-12 mb-4 {e['text']}"></i>
                         <span class="text-xl font-black uppercase tracking-tight">{e['label']}</span>
-                    </div>
+                    </a>
                     ''' for e in emociones])}
                 </div>
             </div>
@@ -166,7 +168,7 @@ def render_ui():
                     </div>
                     <div class="flex flex-col justify-center items-center p-10 text-center">
                         <i data-lucide="bar-chart-3" class="w-20 h-20 mb-6 opacity-20"></i>
-                        <p class="text-gray-400 font-medium">Los resultados se actualizan al instante.</p>
+                        <p class="text-gray-400 font-medium">Los resultados se actualizan al instante tras cada voto.</p>
                     </div>
                 </div>
             </div>
@@ -179,24 +181,10 @@ def render_ui():
         <script>
             lucide.createIcons();
             
-            function changeView(view) {{
-                const url = new URL(window.parent.location.href);
-                url.searchParams.set('view', view);
-                window.parent.location.href = url.href;
-            }}
-
-            function vote(id) {{
-                const url = new URL(window.parent.location.href);
-                url.searchParams.set('vote', id);
-                window.parent.location.href = url.href;
-            }}
-
             function adminReset() {{
                 const pwd = prompt("Contraseña de administrador:");
                 if (pwd === "1234") {{
-                    const url = new URL(window.parent.location.href);
-                    url.searchParams.set('reset', 'true');
-                    window.parent.location.href = url.href;
+                    window.top.location.href = "?reset=true";
                 }}
             }}
         </script>
