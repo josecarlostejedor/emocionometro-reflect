@@ -5,9 +5,10 @@ import pandas as pd
 import os
 import json
 
-# --- CONFIGURACIÓN DE PÁGINA (OCULTA TODO LO DE STREAMLIT) ---
+# --- CONFIGURACIÓN DE PÁGINA ---
 st.set_page_config(page_title="Emocionómetro EF", layout="wide", initial_sidebar_state="collapsed")
 
+# Ocultar elementos de Streamlit para que solo se vea nuestra interfaz
 st.markdown("""
     <style>
         #MainMenu, footer, header {visibility: hidden;}
@@ -49,12 +50,21 @@ def reset_db():
 
 init_db()
 
-# --- INTERFAZ IDÉNTICA A LA PREVIEW (HTML + TAILWIND) ---
+# --- LÓGICA DE PROCESAMIENTO DE VOTOS (Query Params Hack) ---
+# Si detectamos un voto en la URL, lo guardamos y limpiamos la URL
+if "vote" in st.query_params:
+    voto = st.query_params["vote"]
+    add_vote(voto)
+    # Limpiamos los parámetros para evitar votos duplicados al refrescar
+    st.query_params.clear()
+    st.rerun()
+
+# --- INTERFAZ IDÉNTICA A LA PREVIEW ---
 def render_ui():
-    results = get_results()
-    total_votos = sum(r['count'] for r in results)
+    results_data = get_results()
+    total_votos = sum(r['count'] for r in results_data)
     
-    # Datos para el frontend
+    # Emociones configuradas exactamente como en la preview
     emociones = [
         {"id": "happy", "label": "Feliz", "icon": "smile", "color": "#FCD34D", "bg": "bg-amber-50", "text": "text-amber-600"},
         {"id": "excited", "label": "Entusiasmado", "icon": "zap", "color": "#60A5FA", "bg": "bg-blue-50", "text": "text-blue-600"},
@@ -65,6 +75,9 @@ def render_ui():
         {"id": "bored", "label": "Aburrido", "icon": "meh", "color": "#94A3B8", "bg": "bg-slate-50", "text": "text-slate-600"},
         {"id": "sad", "label": "Triste", "icon": "frown", "color": "#64748B", "bg": "bg-indigo-50", "text": "text-indigo-600"},
     ]
+
+    # Convertimos resultados a un formato fácil para JS
+    results_json = json.dumps({r['emocion']: r['count'] for r in results_data})
 
     html_content = f"""
     <!DOCTYPE html>
@@ -84,20 +97,18 @@ def render_ui():
         </style>
     </head>
     <body>
-        <!-- Blobs de fondo (Idénticos a la preview) -->
         <div class="blob w-96 h-96 bg-cyan-400 -top-20 -left-20"></div>
         <div class="blob w-96 h-96 bg-pink-400 top-1/2 -right-20"></div>
         <div class="blob w-80 h-80 bg-lime-400 bottom-0 left-1/4"></div>
 
         <div class="max-w-6xl mx-auto p-6 md:p-10 min-h-screen flex flex-col">
-            <!-- Header -->
             <header class="flex flex-col md:flex-row items-center justify-between gap-8 mb-12 pb-10 border-b border-black/5">
                 <div class="flex flex-col md:flex-row items-center gap-6">
                     <img src="./logo.png" class="w-24 h-24 md:w-32 md:h-32 object-contain" onerror="this.src='https://placehold.co/200x200?text=LOGO'">
                     <div class="text-center md:text-left">
                         <h1 class="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none text-gray-800">Emocionómetro</h1>
                         <p class="text-xl font-bold text-gray-600 mt-2">Día de la Educación Física en la Calle</p>
-                        <p class="italic text-pink-600 font-medium">"Moviendo cuerpos, conectando mentes. La calle es salud mental en movimiento"</p>
+                        <p class="italic text-pink-600 font-medium">"Moviendo cuerpos, conetando mentes. La calle es salud mental en movimiento"</p>
                     </div>
                 </div>
                 <div class="flex gap-4">
@@ -106,7 +117,6 @@ def render_ui():
                 </div>
             </header>
 
-            <!-- Página de Votación -->
             <div id="page-vote" class="space-y-10">
                 <h2 class="text-3xl md:text-5xl font-bold text-gray-800">¿Cómo te sientes hoy?</h2>
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
@@ -119,7 +129,6 @@ def render_ui():
                 </div>
             </div>
 
-            <!-- Página de Resultados -->
             <div id="page-results" class="hidden space-y-10">
                 <div class="flex justify-between items-end">
                     <h2 class="text-3xl md:text-5xl font-bold text-gray-800">Marcador General</h2>
@@ -127,26 +136,21 @@ def render_ui():
                 </div>
                 <div class="grid md:grid-cols-2 gap-10">
                     <div class="glass p-8 rounded-[3rem] min-h-[300px] flex flex-col justify-center">
-                        {"".join([f'''
+                        { "".join([f'''
                         <div class="mb-6">
                             <div class="flex justify-between font-bold uppercase text-sm mb-2">
-                                <span>{next(e['label'] for e in emociones if e['id'] == r['emocion'])}</span>
-                                <span>{r['count']}</span>
+                                <span>{e['label']}</span>
+                                <span>{results_data[i]['count'] if i < len(results_data) else 0}</span>
                             </div>
                             <div class="w-full bg-black/5 h-3 rounded-full overflow-hidden">
-                                <div class="h-full bg-pink-500" style="width: {(r['count']/total_votos*100) if total_votos > 0 else 0}%"></div>
+                                <div class="h-full bg-pink-500" style="width: {(results_data[i]['count']/total_votos*100) if total_votos > 0 and i < len(results_data) else 0}%"></div>
                             </div>
                         </div>
-                        ''' for r in results])}
-                    </div>
-                    <div class="flex flex-col justify-center items-center p-10 text-center">
-                        <i data-lucide="bar-chart-3" class="w-20 h-20 mb-6 opacity-20"></i>
-                        <p class="text-gray-400 font-medium">Los resultados se actualizan en tiempo real al refrescar la página.</p>
+                        ''' for i, e in enumerate(emociones)]) }
                     </div>
                 </div>
             </div>
 
-            <!-- Footer -->
             <footer class="mt-auto pt-20 pb-10 text-center opacity-40 font-bold text-xs uppercase tracking-widest">
                 © 2026 Día de la Educación Física en la Calle • Construido con Pasión. <br> (Dpto. de EF del IES Lucía de Medrano)
             </footer>
@@ -154,18 +158,18 @@ def render_ui():
 
         <script>
             lucide.createIcons();
-            
+            const results = {results_json};
+
             function showPage(page) {{
                 document.getElementById('page-vote').classList.toggle('hidden', page !== 'vote');
                 document.getElementById('page-results').classList.toggle('hidden', page !== 'results');
             }}
 
             function sendVote(id) {{
-                // Esta es la clave: enviamos el voto a Streamlit
-                const data = {{type: 'vote', emotion: id}};
-                window.parent.postMessage({{type: 'streamlit:setComponentValue', value: data}}, '*');
-                alert('¡Voto registrado con éxito!');
-                showPage('results');
+                // TRUCO DEFINITIVO: Cambiamos la URL del padre para que Streamlit detecte el voto
+                const url = new URL(window.parent.location.href);
+                url.searchParams.set('vote', id);
+                window.parent.location.href = url.href;
             }}
         </script>
     </body>
@@ -173,20 +177,14 @@ def render_ui():
     """
     return components.html(html_content, height=1000, scrolling=False)
 
-# --- LÓGICA DE PROCESAMIENTO ---
-voto_data = render_ui()
+# Renderizamos la UI
+render_ui()
 
-# Si el componente HTML nos envía un voto, lo guardamos
-if voto_data and voto_data.get('type') == 'vote':
-    add_vote(voto_data['emotion'])
-    st.rerun()
-
-# Panel de Administración oculto (solo accesible por URL o expander de Streamlit si fuera necesario)
+# Panel de administración en el sidebar (oculto por defecto)
 with st.sidebar:
     st.title("Admin")
     pwd = st.text_input("Password", type="password")
     if pwd == "1234":
-        if st.button("Reiniciar Base de Datos"):
+        if st.button("Reiniciar Marcador"):
             reset_db()
-            st.success("Reiniciado")
             st.rerun()
