@@ -1,152 +1,253 @@
 import streamlit as st
-import streamlit.components.v1 as components
-import sqlite3
 import pandas as pd
+import sqlite3
 import os
-import json
 
-# --- CONFIGURACIÓN DE PÁGINA ---
-st.set_page_config(page_title="Emocionómetro EF", layout="wide", initial_sidebar_state="collapsed")
+# 1. Configuración de la página
+st.set_page_config(
+    page_title="Emocionómetro EF",
+    page_icon="🏃‍♂️",
+    layout="wide",
+    initial_sidebar_state="collapsed"
+)
 
-# --- BASE DE DATOS ---
-def init_db():
-    db_path = os.path.join(os.getcwd(), 'emocionometro.db')
+# 2. CSS Maestro: Convierte Streamlit en la Preview de React
+st.markdown("""
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700;900&display=swap');
+
+    /* Fondo Espectacular con Blobs Animados */
+    .stApp {
+        background-color: #FAFAFA !important;
+        background-image: 
+            radial-gradient(circle at 5% 5%, rgba(0, 174, 239, 0.12) 0%, transparent 30%),
+            radial-gradient(circle at 95% 20%, rgba(236, 0, 140, 0.12) 0%, transparent 30%),
+            radial-gradient(circle at 15% 90%, rgba(141, 198, 63, 0.12) 0%, transparent 30%),
+            radial-gradient(circle at 85% 85%, rgba(249, 212, 35, 0.12) 0%, transparent 30%) !important;
+        background-attachment: fixed !important;
+    }
+
+    /* Tipografía */
+    html, body, [class*="st-"] {
+        font-family: 'Inter', sans-serif !important;
+    }
+
+    /* Títulos Estilo Preview */
+    .main-title {
+        font-size: clamp(3rem, 8vw, 5rem) !important;
+        font-weight: 900 !important;
+        text-transform: uppercase !important;
+        letter-spacing: -0.05em !important;
+        line-height: 0.85 !important;
+        color: #2D2D2D !important;
+        margin-bottom: 0.5rem !important;
+    }
+
+    .event-name {
+        font-size: 1.5rem !important;
+        font-weight: 700 !important;
+        color: #5A5A40 !important;
+        margin-bottom: 0.2rem !important;
+    }
+
+    .slogan {
+        font-family: 'Libre Baskerville', serif !important;
+        font-style: italic !important;
+        color: #ec008c !important;
+        font-size: 1.1rem !important;
+        opacity: 0.8;
+    }
+
+    /* TRANSFORMACIÓN DE BOTONES EN TARJETAS (HACK CSS) */
+    div.stButton > button {
+        background: rgba(255, 255, 255, 0.45) !important;
+        backdrop-filter: blur(12px) !important;
+        -webkit-backdrop-filter: blur(12px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.6) !important;
+        border-radius: 2.5rem !important;
+        height: 220px !important;
+        width: 100% !important;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.03) !important;
+        color: transparent !important; /* Ocultamos el texto original */
+        position: relative !important;
+        overflow: hidden !important;
+    }
+
+    div.stButton > button:hover {
+        transform: translateY(-10px) !important;
+        background: white !important;
+        box-shadow: 0 25px 50px rgba(0,0,0,0.1) !important;
+        border-color: rgba(0,0,0,0.05) !important;
+    }
+
+    /* Capa visual sobre el botón para iconos y etiquetas */
+    .button-overlay {
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        display: flex; flex-direction: column;
+        align-items: center; justify-content: center;
+        pointer-events: none; /* Deja pasar el click al botón real */
+        z-index: 10;
+    }
+
+    .emo-icon { font-size: 3.5rem; margin-bottom: 1rem; }
+    .emo-label { font-size: 1.2rem; font-weight: 800; text-transform: uppercase; letter-spacing: -0.02em; }
+
+    /* Resultados Card */
+    .results-card {
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(20px);
+        border-radius: 3rem;
+        padding: 3rem;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.05);
+        margin-top: 2rem;
+    }
+
+    /* Ocultar basura de Streamlit */
+    #MainMenu, footer, header {visibility: hidden;}
+    .stDeployButton {display:none;}
+</style>
+""", unsafe_allow_html=True)
+
+# 3. Base de Datos (SQLite)
+def get_db_connection():
+    db_path = os.path.join(os.getcwd(), 'votos_ef.db')
     conn = sqlite3.connect(db_path, check_same_thread=False)
+    return conn
+
+def init_db():
+    conn = get_db_connection()
     c = conn.cursor()
     c.execute('CREATE TABLE IF NOT EXISTS votos (emocion TEXT, fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP)')
     conn.commit()
-    return conn
-
-conn = init_db()
+    conn.close()
 
 def add_vote(emo):
+    conn = get_db_connection()
     c = conn.cursor()
     c.execute('INSERT INTO votos (emocion) VALUES (?)', (emo,))
     conn.commit()
-
-def get_results_json():
-    df = pd.read_sql_query('SELECT emocion, COUNT(*) as count FROM votos GROUP BY emocion', conn)
-    return df.to_json(orient='records')
+    conn.close()
 
 def reset_db():
+    conn = get_db_connection()
     c = conn.cursor()
     c.execute('DELETE FROM votos')
     conn.commit()
+    conn.close()
 
-# --- LÓGICA DE ESTADO ---
-if 'voted' not in st.session_state:
-    st.session_state.voted = False
+init_db()
 
-# --- COMPONENTE UI ESPECTACULAR (HTML/CSS/JS) ---
-def render_spectacular_ui():
-    results = get_results_json()
+# 4. Cabecera
+col_l, col_r = st.columns([1, 4])
+with col_l:
+    if os.path.exists("logo.png"):
+        st.image("logo.png", use_container_width=True)
+    else:
+        st.markdown('<div style="width:120px;height:120px;background:#eee;border-radius:30px;"></div>', unsafe_allow_html=True)
+
+with col_r:
+    st.markdown('<h1 class="main-title">Emocionómetro</h1>', unsafe_allow_html=True)
+    st.markdown('<p class="event-name">Día de la Educación Física en la Calle</p>', unsafe_allow_html=True)
+    st.markdown('<p class="slogan">"Moviendo cuerpos, conectando mentes. La calle es salud mental en movimiento"</p>', unsafe_allow_html=True)
+
+# 5. Navegación
+if 'page' not in st.session_state:
+    st.session_state.page = 'votar'
+
+st.markdown("<br>", unsafe_allow_html=True)
+_, c_nav1, c_nav2 = st.columns([6, 1, 1])
+with c_nav1:
+    if st.button("📊 RESULTADOS", key="nav_res"): st.session_state.page = 'resultados'
+with c_nav2:
+    if st.button("🗳️ VOTAR", key="nav_vot"): st.session_state.page = 'votar'
+
+# 6. VISTA: VOTACIÓN
+if st.session_state.page == 'votar':
+    st.markdown('<h2 style="font-weight:900; font-size:2.5rem; margin-bottom:2.5rem; letter-spacing:-0.04em;">¿Cómo te sientes hoy?</h2>', unsafe_allow_html=True)
     
-    # Definición de emociones para el JS
-    emociones_js = [
-        {"id": "happy", "label": "Feliz", "icon": "smile", "color": "#FCD34D", "bg": "bg-amber-50", "text": "text-amber-600"},
-        {"id": "excited", "label": "Entusiasmado", "icon": "zap", "color": "#60A5FA", "bg": "bg-blue-50", "text": "text-blue-600"},
-        {"id": "proud", "label": "Orgulloso", "icon": "trophy", "color": "#34D399", "bg": "bg-emerald-50", "text": "text-emerald-600"},
-        {"id": "motivated", "label": "Motivado", "icon": "dumbbell", "color": "#A78BFA", "bg": "bg-violet-50", "text": "text-violet-600"},
-        {"id": "loved", "label": "Agradecido", "icon": "heart", "color": "#F472B6", "bg": "bg-pink-50", "text": "text-pink-600"},
-        {"id": "tired", "label": "Cansado", "icon": "flame", "color": "#F87171", "bg": "bg-red-50", "text": "text-red-600"},
-        {"id": "bored", "label": "Aburrido", "icon": "meh", "color": "#94A3B8", "bg": "bg-slate-50", "text": "text-slate-600"},
-        {"id": "sad", "label": "Triste", "icon": "frown", "color": "#64748B", "bg": "bg-indigo-50", "text": "text-indigo-600"},
+    emociones = [
+        {"id": "feliz", "label": "Feliz", "icon": "😊", "color": "#FCD34D"},
+        {"id": "entusiasmado", "label": "Entusiasmado", "icon": "⚡", "color": "#60A5FA"},
+        {"id": "orgulloso", "label": "Orgulloso", "icon": "🏆", "color": "#34D399"},
+        {"id": "motivado", "label": "Motivado", "icon": "💪", "color": "#A78BFA"},
+        {"id": "agradecido", "label": "Agradecido", "icon": "❤️", "color": "#F472B6"},
+        {"id": "cansado", "label": "Cansado", "icon": "🔥", "color": "#F87171"},
+        {"id": "aburrido", "label": "Aburrido", "icon": "😐", "color": "#94A3B8"},
+        {"id": "triste", "label": "Triste", "icon": "😢", "color": "#64748B"},
     ]
 
-    html_code = f"""
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <script src="https://cdn.tailwindcss.com"></script>
-        <script src="https://unpkg.com/lucide@latest"></script>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Libre+Baskerville:ital,wght@1,400&display=swap" rel="stylesheet">
-        <style>
-            body {{ font-family: 'Inter', sans-serif; background: #FAFAFA; margin: 0; overflow-x: hidden; }}
-            .glass {{ background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.5); }}
-            .blob {{ position: fixed; border-radius: 50%; filter: blur(80px); opacity: 0.15; z-index: -1; animation: pulse 10s infinite alternate; }}
-            @keyframes pulse {{ from {{ transform: scale(1); }} to {{ transform: scale(1.2); }} }}
-            .card-btn {{ transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; }}
-            .card-btn:hover {{ transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); background: white; }}
-        </style>
-    </head>
-    <body>
-        <!-- Blobs de fondo -->
-        <div class="blob w-96 h-96 bg-cyan-400 -top-20 -left-20"></div>
-        <div class="blob w-96 h-96 bg-magenta-400 top-1/2 -right-20" style="background-color: #ec008c;"></div>
-        <div class="blob w-80 h-80 bg-lime-400 bottom-0 left-1/4"></div>
-
-        <div class="max-w-6xl mx-auto p-6 md:p-10">
-            <!-- Header -->
-            <header class="flex flex-col md:flex-row items-center justify-between gap-8 mb-12 pb-10 border-b border-black/5">
-                <div class="flex flex-col md:flex-row items-center gap-6">
-                    <img src="./logo.png" class="w-24 h-24 md:w-32 md:h-32 object-contain" onerror="this.src='https://placehold.co/200x200?text=LOGO'">
-                    <div class="text-center md:text-left">
-                        <h1 class="text-5xl md:text-7xl font-black uppercase tracking-tighter leading-none text-gray-800">Emocionómetro</h1>
-                        <p class="text-xl font-bold text-gray-600 mt-2">Día de la Educación Física en la Calle</p>
-                        <p class="italic text-pink-600 font-medium">"Moviendo cuerpos, conectando mentes. La calle es salud mental en movimiento"</p>
-                    </div>
-                </div>
-            </header>
-
-            <!-- Grid de Votación -->
-            <div id="vote-grid" class="grid grid-cols-2 lg:grid-cols-4 gap-6">
-                { "".join([f'''
-                <div onclick="vote('{e['id']}')" class="card-btn glass {e['bg']} p-8 rounded-[2.5rem] flex flex-col items-center justify-center text-center">
-                    <i data-lucide="{e['icon']}" class="w-12 h-12 mb-4 {e['text']}"></i>
-                    <span class="text-xl font-black uppercase tracking-tight">{e['label']}</span>
-                </div>
-                ''' for e in emociones_js]) }
-            </div>
-        </div>
-
-        <script>
-            lucide.createIcons();
-            function vote(id) {{
-                // Enviamos el ID de la emoción a Streamlit
-                window.parent.postMessage({{
-                    type: 'streamlit:setComponentValue',
-                    value: id
-                }}, '*');
-            }}
-        </script>
-    </body>
-    </html>
-    """
-    return components.html(html_code, height=900, scrolling=False)
-
-# --- RENDERIZADO ---
-
-# Capturamos el voto desde el componente HTML
-voto_detectado = render_spectacular_ui()
-
-if voto_detectado:
-    add_vote(voto_detectado)
-    st.balloons()
-    st.session_state.voted = True
-    st.rerun()
-
-# Panel de Resultados (se muestra debajo o en otra página)
-st.markdown("---")
-col1, col2 = st.columns([2, 1])
-
-with col1:
-    st.subheader("📊 Marcador en Tiempo Real")
-    df = pd.read_sql_query('SELECT emocion, COUNT(*) as conteo FROM votos GROUP BY emocion', conn)
-    if not df.empty:
-        st.bar_chart(df.set_index('emocion'), color="#ec008c")
-    else:
-        st.info("Esperando votos...")
-
-with col2:
-    with st.expander("🛠️ Admin"):
-        pwd = st.text_input("Contraseña", type="password")
-        if pwd == "1234":
-            if st.button("REINICIAR TODO"):
-                reset_db()
+    cols = st.columns(4)
+    for i, emo in enumerate(emociones):
+        with cols[i % 4]:
+            # El botón real (invisible pero clickeable)
+            if st.button(emo['label'], key=f"btn_{emo['id']}"):
+                add_vote(emo['id'])
+                st.balloons()
+                st.session_state.page = 'resultados'
                 st.rerun()
+            
+            # La capa visual (lo que el usuario ve)
+            st.markdown(f"""
+                <div class="button-overlay" style="margin-top: -220px; margin-bottom: 180px;">
+                    <span class="emo-icon">{emo['icon']}</span>
+                    <span class="emo-label" style="color: {emo['color']}">{emo['label']}</span>
+                </div>
+            """, unsafe_allow_html=True)
 
+# 7. VISTA: RESULTADOS
+else:
+    conn = get_db_connection()
+    df = pd.read_sql_query("SELECT emocion, COUNT(*) as conteo FROM votos GROUP BY emocion", conn)
+    conn.close()
+    
+    total = df['conteo'].sum() if not df.empty else 0
+    
+    st.markdown(f"""
+        <div class="results-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:3rem;">
+                <h2 style="font-weight:900; font-size:3.5rem; margin:0; letter-spacing:-0.05em;">Marcador General</h2>
+                <div style="background:#1A1A1A; color:white; padding:0.7rem 2rem; border-radius:1.5rem; font-weight:900; font-size:1.8rem;">
+                    TOTAL: {total}
+                </div>
+            </div>
+    """, unsafe_allow_html=True)
+    
+    if not df.empty:
+        st.bar_chart(df.set_index('emocion')['conteo'], color="#ec008c")
+        
+        for _, row in df.iterrows():
+            pct = int((row['conteo'] / total) * 100)
+            st.markdown(f"""
+                <div style="display:flex; align-items:center; gap:1.5rem; margin-bottom:1.2rem; background:rgba(0,0,0,0.03); padding:1.2rem; border-radius:2rem; border: 1px solid rgba(0,0,0,0.05);">
+                    <div style="font-weight:900; font-size:1.1rem; width:160px; text-transform:uppercase; letter-spacing:0.05em;">{row['emocion']}</div>
+                    <div style="flex:1; background:rgba(0,0,0,0.05); height:14px; border-radius:10px; overflow:hidden;">
+                        <div style="background:linear-gradient(90deg, #ec008c, #00aeef); width:{pct}%; height:100%;"></div>
+                    </div>
+                    <div style="font-weight:900; width:60px; font-size:1.2rem;">{pct}%</div>
+                </div>
+            """, unsafe_allow_html=True)
+    else:
+        st.markdown("<p style='text-align:center; opacity:0.4; font-size:1.5rem; padding:4rem;'>Aún no hay votos. ¡Sé el primero!</p>", unsafe_allow_html=True)
+    
+    st.markdown("</div>", unsafe_allow_html=True)
+
+# 8. Administración
+st.markdown("<br><br>", unsafe_allow_html=True)
+with st.expander("🛠️ CONFIGURACIÓN"):
+    pwd = st.text_input("Contraseña de administrador", type="password")
+    if pwd == "1234":
+        if st.button("⚠️ REINICIAR MARCADOR A CERO"):
+            reset_db()
+            st.success("Datos borrados.")
+            st.rerun()
+
+# 9. Footer
 st.markdown(f"""
-    <div style="text-align:center; padding:2rem; opacity:0.5; font-weight:bold;">
-        © 2026 Día de la Educación Física en la Calle • (Dpto. de EF del IES Lucía de Medrano)
-    </div>
+<div style="text-align:center; padding:5rem 2rem; border-top:1px solid rgba(0,0,0,0.05); margin-top:5rem; font-size:0.85rem; font-weight:800; text-transform:uppercase; letter-spacing:0.2em; opacity:0.4;">
+    © 2026 Día de la Educación Física en la Calle • Construido con Pasión <br>
+    <span style="color:#ec008c">(Dpto. de EF del IES Lucía de Medrano)</span>
+</div>
 """, unsafe_allow_html=True)
