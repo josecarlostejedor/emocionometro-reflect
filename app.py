@@ -11,132 +11,139 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# 2. CSS DE PRECISIÓN (Forzando el diseño sobre Streamlit)
+# 2. CSS DE ALTA PRECISIÓN (Garantiza el diseño en Streamlit Cloud)
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700;900&display=swap');
 
-    /* Fondo Espectacular */
+    /* Fondo con Blobs Suaves */
     .stApp {
         background-color: #FAFAFA !important;
         background-image: 
-            radial-gradient(circle at 5% 5%, rgba(0, 174, 239, 0.1) 0%, transparent 40%),
-            radial-gradient(circle at 95% 20%, rgba(236, 0, 140, 0.1) 0%, transparent 40%),
-            radial-gradient(circle at 15% 90%, rgba(141, 198, 63, 0.1) 0%, transparent 40%),
-            radial-gradient(circle at 85% 85%, rgba(249, 212, 35, 0.1) 0%, transparent 40%) !important;
+            radial-gradient(circle at 10% 10%, rgba(0, 174, 239, 0.1) 0%, transparent 40%),
+            radial-gradient(circle at 90% 10%, rgba(236, 0, 140, 0.1) 0%, transparent 40%),
+            radial-gradient(circle at 50% 90%, rgba(141, 198, 63, 0.1) 0%, transparent 40%) !important;
         background-attachment: fixed !important;
     }
 
-    /* Ocultar elementos de Streamlit */
+    /* Limpieza de Interfaz */
     #MainMenu, footer, header {visibility: hidden;}
     .stDeployButton {display:none;}
-    .block-container {padding: 3rem 6rem !important;}
+    .block-container {padding: 4rem 8rem !important;}
 
-    /* Títulos y LEMA GIGANTE */
+    /* CABECERA Y LEMA */
     .main-title {
         font-family: 'Inter', sans-serif;
-        font-size: clamp(3.5rem, 8vw, 6rem) !important;
+        font-size: 5.5rem !important;
         font-weight: 900 !important;
         text-transform: uppercase !important;
-        letter-spacing: -0.05em !important;
-        line-height: 0.85 !important;
+        letter-spacing: -0.06em !important;
+        line-height: 0.8 !important;
         color: #1A1A1A !important;
     }
 
     .event-name {
-        font-size: 2rem !important;
+        font-size: 2.2rem !important;
         font-weight: 700 !important;
-        color: #4A4A4A !important;
+        color: #333 !important;
         margin-top: 1rem !important;
     }
 
-    .slogan-box {
+    .slogan-container {
         font-family: 'Libre Baskerville', serif !important;
         font-style: italic !important;
         color: #1A1A1A !important;
-        font-size: 2.2rem !important; /* LEMA MUCHO MÁS GRANDE */
+        font-size: 2.4rem !important; /* LEMA MUCHO MÁS GRANDE */
         font-weight: 600 !important;
-        margin-top: 1.5rem !important;
-        line-height: 1.3 !important;
-        border-left: 6px solid #ec008c;
-        padding-left: 2rem;
-        max-width: 900px;
+        margin: 2rem 0 !important;
+        line-height: 1.2 !important;
+        border-left: 8px solid #ec008c;
+        padding-left: 2.5rem;
+        max-width: 1000px;
     }
 
-    /* --- NAVEGACIÓN (Pills Elegantes) --- */
-    .nav-zone [data-testid="stButton"] button {
-        background: rgba(255, 255, 255, 0.7) !important;
+    /* --- BOTONES DE NAVEGACIÓN (Pills) --- */
+    .nav-container [data-testid="stButton"] button {
+        background: rgba(255, 255, 255, 0.8) !important;
         backdrop-filter: blur(10px) !important;
-        border: 1px solid rgba(0, 0, 0, 0.1) !important;
+        border: 2px solid #1A1A1A !important;
         border-radius: 100px !important;
-        padding: 0.8rem 2.5rem !important;
+        padding: 0.8rem 3rem !important;
         font-weight: 800 !important;
         text-transform: uppercase !important;
-        letter-spacing: 0.1em !important;
+        letter-spacing: 0.15em !important;
         color: #1A1A1A !important;
         transition: all 0.3s ease !important;
         width: 100% !important;
     }
 
-    .nav-zone [data-testid="stButton"] button:hover {
+    .nav-container [data-testid="stButton"] button:hover {
         background: #1A1A1A !important;
         color: white !important;
-        transform: translateY(-3px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+        transform: scale(1.05);
     }
 
-    /* --- TARJETAS DE EMOCIÓN (Forzando tamaño e iconos) --- */
-    /* Target específico al contenedor de botones de Streamlit */
-    .emotion-zone [data-testid="stButton"] button {
+    /* --- TARJETAS DE EMOCIÓN (EL CORAZÓN DEL DISEÑO) --- */
+    .emotion-grid [data-testid="stButton"] button {
         background: rgba(255, 255, 255, 0.5) !important;
-        backdrop-filter: blur(15px) !important;
-        border: 1px solid rgba(255, 255, 255, 0.9) !important;
-        border-radius: 3.5rem !important;
-        height: 300px !important; /* ALTURA FIJA Y GRANDE */
+        backdrop-filter: blur(20px) !important;
+        border: 2px solid rgba(255, 255, 255, 0.9) !important;
+        border-radius: 4rem !important;
+        height: 320px !important; /* ALTURA FIJA Y GRANDE */
         width: 100% !important;
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
         justify-content: center !important;
         transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.03) !important;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.04) !important;
     }
 
-    .emotion-zone [data-testid="stButton"] button:hover {
-        transform: translateY(-15px) !important;
+    .emotion-grid [data-testid="stButton"] button:hover {
+        transform: translateY(-20px) scale(1.02) !important;
         background: white !important;
-        box-shadow: 0 40px 70px rgba(0,0,0,0.1) !important;
-        border-color: rgba(0,0,0,0.05) !important;
+        box-shadow: 0 50px 80px rgba(0,0,0,0.12) !important;
+        border-color: #ec008c !important;
     }
 
-    /* Estilo del texto e ICONOS GIGANTES */
-    .emotion-zone [data-testid="stButton"] button div[data-testid="stMarkdownContainer"] p {
+    /* ICONOS Y TEXTO DENTRO DEL BOTÓN */
+    .emotion-grid [data-testid="stButton"] button p {
         font-family: 'Inter', sans-serif !important;
         font-weight: 900 !important;
         text-transform: uppercase !important;
         color: #1A1A1A !important;
         line-height: 1 !important;
         text-align: center !important;
+        margin: 0 !important;
     }
 
-    /* Forzamos el tamaño del emoji (primera línea del botón) */
-    .emotion-zone [data-testid="stButton"] button p {
-        font-size: 1.4rem !important; /* Tamaño del texto */
+    /* Forzamos el tamaño del ICONO (Emoji) */
+    .emotion-grid [data-testid="stButton"] button p {
+        font-size: 1.5rem !important; /* Tamaño del texto */
     }
 
-    /* Usamos un selector de atributo para el emoji si es posible, o forzamos por línea */
-    .emotion-zone [data-testid="stButton"] button p::first-line {
-        font-size: 6rem !important; /* ICONOS REALMENTE GIGANTES */
+    /* Selector ultra-específico para el emoji */
+    .emotion-grid [data-testid="stButton"] button div[data-testid="stMarkdownContainer"] p::first-line {
+        font-size: 7.5rem !important; /* ICONOS REALMENTE GIGANTES */
+        line-height: 1.5 !important;
     }
 
-    /* Resultados Card */
+    /* Resultados */
     .results-card {
-        background: rgba(255, 255, 255, 0.75);
+        background: rgba(255, 255, 255, 0.8);
         backdrop-filter: blur(30px);
-        border-radius: 4rem;
-        padding: 4.5rem;
-        border: 1px solid rgba(255, 255, 255, 0.6);
-        box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.08);
+        border-radius: 5rem;
+        padding: 5rem;
+        border: 2px solid white;
+        box-shadow: 0 60px 120px -20px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Expander */
+    .stExpander {
+        border: none !important;
+        background: rgba(0,0,0,0.03) !important;
+        border-radius: 2rem !important;
+        margin-top: 6rem !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -170,19 +177,19 @@ with col_logo:
     if os.path.exists("logo.png"):
         st.image("logo.png", use_container_width=True)
     else:
-        st.markdown('<div style="width:160px;height:160px;background:#eee;border-radius:50px;"></div>', unsafe_allow_html=True)
+        st.markdown('<div style="width:180px;height:180px;background:#eee;border-radius:60px;"></div>', unsafe_allow_html=True)
 
 with col_text:
     st.markdown('<h1 class="main-title">Emocionómetro</h1>', unsafe_allow_html=True)
     st.markdown('<p class="event-name">Día de la Educación Física en la Calle</p>', unsafe_allow_html=True)
-    st.markdown('<div class="slogan-box">"Moviendo cuerpos, conectando mentes. La calle es salud mental en movimiento"</div>', unsafe_allow_html=True)
+    st.markdown('<div class="slogan-container">"Moviendo cuerpos, conectando mentes. La calle es salud mental en movimiento"</div>', unsafe_allow_html=True)
 
 # 5. Navegación
 if 'page' not in st.session_state:
     st.session_state.page = 'votar'
 
-st.markdown('<div class="nav-zone">', unsafe_allow_html=True)
-_, c_nav1, c_nav2 = st.columns([6, 1.5, 1.5])
+st.markdown('<div class="nav-container">', unsafe_allow_html=True)
+_, c_nav1, c_nav2 = st.columns([6, 1.8, 1.8])
 with c_nav1:
     if st.button("📊 RESULTADOS", key="nav_res"): 
         st.session_state.page = 'resultados'
@@ -195,9 +202,9 @@ st.markdown('</div>', unsafe_allow_html=True)
 
 # 6. VISTA: VOTACIÓN
 if st.session_state.page == 'votar':
-    st.markdown('<h2 style="font-weight:900; font-size:3.5rem; margin: 4rem 0 3rem 0; letter-spacing:-0.06em; color:#1A1A1A;">¿Cómo te sientes hoy?</h2>', unsafe_allow_html=True)
+    st.markdown('<h2 style="font-weight:900; font-size:4rem; margin: 5rem 0 4rem 0; letter-spacing:-0.07em; color:#1A1A1A;">¿Cómo te sientes hoy?</h2>', unsafe_allow_html=True)
     
-    st.markdown('<div class="emotion-zone">', unsafe_allow_html=True)
+    st.markdown('<div class="emotion-grid">', unsafe_allow_html=True)
     emociones = [
         {"id": "feliz", "label": "Feliz", "icon": "😊"},
         {"id": "entusiasmado", "label": "Entusiasmado", "icon": "⚡"},
@@ -212,7 +219,7 @@ if st.session_state.page == 'votar':
     cols = st.columns(4)
     for i, emo in enumerate(emociones):
         with cols[i % 4]:
-            # El truco del salto de línea para separar icono de texto
+            # El salto de línea es clave para el CSS del icono gigante
             if st.button(f"{emo['icon']}\n{emo['label']}", key=f"v_{emo['id']}"):
                 add_vote(emo['id'])
                 st.balloons()
@@ -234,9 +241,9 @@ else:
 
     st.markdown(f"""
         <div class="results-card">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5rem;">
-                <h2 style="font-weight:900; font-size:4.5rem; margin:0; letter-spacing:-0.06em; color:#1A1A1A;">Marcador General</h2>
-                <div style="background:#1A1A1A; color:white; padding:1.2rem 3.5rem; border-radius:2.5rem; font-weight:900; font-size:2.5rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6rem;">
+                <h2 style="font-weight:900; font-size:5rem; margin:0; letter-spacing:-0.07em; color:#1A1A1A;">Marcador General</h2>
+                <div style="background:#1A1A1A; color:white; padding:1.5rem 4rem; border-radius:3rem; font-weight:900; font-size:3rem;">
                     TOTAL: {total}
                 </div>
             </div>
@@ -259,16 +266,16 @@ else:
             pct = int((row['conteo'] / total) * 100)
             
             st.markdown(f"""
-                <div style="display:flex; align-items:center; gap:2.5rem; margin-bottom:2rem; background:rgba(255,255,255,0.5); padding:2rem 3rem; border-radius:3rem; border: 1px solid rgba(0,0,0,0.05);">
-                    <div style="font-weight:900; font-size:1.4rem; width:240px; letter-spacing:0.05em; color:#1A1A1A;">{label}</div>
-                    <div style="flex:1; background:rgba(0,0,0,0.06); height:24px; border-radius:15px; overflow:hidden;">
-                        <div style="background:{color}; width:{pct}%; height:100%; border-radius:15px;"></div>
+                <div style="display:flex; align-items:center; gap:3rem; margin-bottom:2.5rem; background:rgba(255,255,255,0.6); padding:2.5rem 4rem; border-radius:4rem; border: 1px solid rgba(0,0,0,0.05);">
+                    <div style="font-weight:900; font-size:1.6rem; width:280px; letter-spacing:0.05em; color:#1A1A1A;">{label}</div>
+                    <div style="flex:1; background:rgba(0,0,0,0.08); height:30px; border-radius:20px; overflow:hidden;">
+                        <div style="background:{color}; width:{pct}%; height:100%; border-radius:20px;"></div>
                     </div>
-                    <div style="font-weight:900; width:100px; font-size:1.8rem; color:#1A1A1A; text-align:right;">{pct}%</div>
+                    <div style="font-weight:900; width:120px; font-size:2.2rem; color:#1A1A1A; text-align:right;">{pct}%</div>
                 </div>
             """, unsafe_allow_html=True)
     else:
-        st.markdown("<p style='text-align:center; opacity:0.4; font-size:2.5rem; padding:10rem;'>Aún no hay votos. ¡Sé el primero!</p>", unsafe_allow_html=True)
+        st.markdown("<p style='text-align:center; opacity:0.4; font-size:3rem; padding:12rem;'>Aún no hay votos. ¡Sé el primero!</p>", unsafe_allow_html=True)
     
     st.markdown("</div>", unsafe_allow_html=True)
 
@@ -283,8 +290,8 @@ with st.expander("🛠️ CONFIGURACIÓN"):
 
 # 9. Footer
 st.markdown(f"""
-<div style="text-align:center; padding:10rem 2rem; border-top:1px solid rgba(0,0,0,0.05); margin-top:10rem; font-size:1.1rem; font-weight:800; text-transform:uppercase; letter-spacing:0.4em; opacity:0.4; color:#1A1A1A;">
+<div style="text-align:center; padding:12rem 2rem; border-top:1px solid rgba(0,0,0,0.05); margin-top:12rem; font-size:1.2rem; font-weight:800; text-transform:uppercase; letter-spacing:0.5em; opacity:0.4; color:#1A1A1A;">
     © 2026 Día de la Educación Física en la Calle • Construido con Pasión <br>
-    <span style="color:#4A4A4A; font-size:1rem;">(Dpto. de EF del IES Lucía de Medrano)</span>
+    <span style="color:#4A4A4A; font-size:1.1rem;">(Dpto. de EF del IES Lucía de Medrano)</span>
 </div>
 """, unsafe_allow_html=True)
