@@ -11,7 +11,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# 2. CSS NUCLEAR: Forzando el diseño sobre Streamlit
+# 2. CSS DE ALTA PRECISIÓN (Forzando el diseño sobre Streamlit)
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700;900&display=swap');
@@ -22,7 +22,6 @@ st.markdown("""
         background-image: 
             radial-gradient(circle at 10% 10%, rgba(0, 174, 239, 0.05) 0%, transparent 40%),
             radial-gradient(circle at 90% 10%, rgba(236, 0, 140, 0.05) 0%, transparent 40%) !important;
-        background-attachment: fixed !important;
     }
 
     /* Ocultar elementos de Streamlit */
@@ -60,7 +59,6 @@ st.markdown("""
         padding: 0.6rem 2rem !important;
         font-weight: 700 !important;
         color: #1A1A1A !important;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.02) !important;
     }
 
     /* --- TARJETAS DE EMOCIÓN (ESTILO BENTO GRID) --- */
@@ -84,7 +82,7 @@ st.markdown("""
     }
 
     #emotion-zone [data-testid="stButton"] button:hover {
-        transform: translateY(-15px) scale(1.02) !important;
+        transform: translateY(-15px) !important;
         box-shadow: 0 30px 60px rgba(0,0,0,0.1) !important;
     }
 
@@ -110,16 +108,14 @@ st.markdown("""
     }
 
     /* COLORES DE LAS TARJETAS (Asignación por orden) */
-    #emotion-zone div[data-testid="column"]:nth-child(1) button { background: #FFFBEB !important; color: #D97706 !important; }
-    #emotion-zone div[data-testid="column"]:nth-child(2) button { background: #EFF6FF !important; color: #2563EB !important; }
-    #emotion-zone div[data-testid="column"]:nth-child(3) button { background: #F0FDF4 !important; color: #16A34A !important; }
-    #emotion-zone div[data-testid="column"]:nth-child(4) button { background: #F5F3FF !important; color: #7C3AED !important; }
-    
-    /* Segunda fila (Streamlit las numera globalmente en el grid) */
-    #emotion-zone div[data-testid="column"]:nth-child(5) button { background: #FDF2F8 !important; color: #DB2777 !important; }
-    #emotion-zone div[data-testid="column"]:nth-child(6) button { background: #FEF2F2 !important; color: #DC2626 !important; }
-    #emotion-zone div[data-testid="column"]:nth-child(7) button { background: #F8FAFC !important; color: #475569 !important; }
-    #emotion-zone div[data-testid="column"]:nth-child(8) button { background: #EEF2FF !important; color: #4F46E5 !important; }
+    #emotion-zone div[data-testid="column"]:nth-of-type(1) button { background: #FFFBEB !important; color: #D97706 !important; }
+    #emotion-zone div[data-testid="column"]:nth-of-type(2) button { background: #EFF6FF !important; color: #2563EB !important; }
+    #emotion-zone div[data-testid="column"]:nth-of-type(3) button { background: #F0FDF4 !important; color: #16A34A !important; }
+    #emotion-zone div[data-testid="column"]:nth-of-type(4) button { background: #F5F3FF !important; color: #7C3AED !important; }
+    #emotion-zone div[data-testid="column"]:nth-of-type(5) button { background: #FDF2F8 !important; color: #DB2777 !important; }
+    #emotion-zone div[data-testid="column"]:nth-of-type(6) button { background: #FEF2F2 !important; color: #DC2626 !important; }
+    #emotion-zone div[data-testid="column"]:nth-of-type(7) button { background: #F8FAFC !important; color: #475569 !important; }
+    #emotion-zone div[data-testid="column"]:nth-of-type(8) button { background: #EEF2FF !important; color: #4F46E5 !important; }
 
     /* Resultados Card */
     .results-card {
