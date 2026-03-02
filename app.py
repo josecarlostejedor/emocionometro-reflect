@@ -11,7 +11,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# 2. CSS DE MÁXIMA PRIORIDAD (Nuclear)
+# 2. CSS DE PRECISIÓN (Tamaño optimizado para móvil)
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700;900&display=swap');
@@ -21,94 +21,90 @@ st.markdown("""
 
     /* Ocultar basura de Streamlit */
     header, footer, .stDeployButton {display:none !important;}
-    .block-container {padding: 3rem 6rem !important;}
+    .block-container {padding: 1.5rem 2rem !important;} /* Reducido padding lateral */
 
-    /* TÍTULO GIGANTE */
+    /* TÍTULO (Tamaño reducido a la mitad) */
     .main-title {
         font-family: 'Inter', sans-serif;
-        font-size: 6rem !important;
+        font-size: 3rem !important; 
         font-weight: 900 !important;
         text-transform: uppercase !important;
         letter-spacing: -0.05em !important;
         color: #1A1A1A !important;
         margin: 0 !important;
-        line-height: 0.9 !important;
+        line-height: 1 !important;
     }
 
-    /* LEMA MAJESTUOSO (Mucho más grande y elegante) */
+    /* LEMA (Tamaño reducido a la mitad) */
     .slogan-text {
         font-family: 'Libre Baskerville', serif !important;
-        font-size: 3.5rem !important; 
+        font-size: 1.7rem !important; 
         font-weight: 700 !important;
-        line-height: 1.1 !important;
+        line-height: 1.2 !important;
         color: #1A1A1A !important;
-        margin: 2rem 0 5rem 0 !important;
+        margin: 1rem 0 2.5rem 0 !important;
         font-style: italic;
-        border-left: 12px solid #ec008c;
-        padding-left: 2.5rem;
+        border-left: 6px solid #ec008c;
+        padding-left: 1.5rem;
     }
 
-    /* --- TARJETAS DE EMOCIÓN (ESTILO BENTO GRID) --- */
-    /* Forzamos que los botones de Streamlit se conviertan en tarjetas GIGANTES */
+    /* --- TARJETAS DE EMOCIÓN (TAMAÑO MITAD) --- */
     div[data-testid="stButton"] button {
-        height: 350px !important; /* Altura fija y grande */
+        height: 170px !important; /* Altura reducida a la mitad */
         width: 100% !important;
-        border-radius: 50px !important;
+        border-radius: 25px !important;
         border: none !important;
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
         justify-content: center !important;
-        transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
-        box-shadow: 0 15px 40px rgba(0,0,0,0.04) !important;
+        transition: all 0.4s ease !important;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.03) !important;
         padding: 0 !important;
     }
 
     div[data-testid="stButton"] button:hover {
-        transform: translateY(-20px) scale(1.02) !important;
-        box-shadow: 0 40px 80px rgba(0,0,0,0.12) !important;
+        transform: translateY(-8px) !important;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.08) !important;
     }
 
-    /* Texto e ICONOS GIGANTES dentro del botón */
+    /* Texto e ICONOS (Tamaño reducido a la mitad) */
     div[data-testid="stButton"] button p {
         font-family: 'Libre Baskerville', serif !important;
-        font-weight: 900 !important;
+        font-weight: 700 !important;
         text-transform: uppercase !important;
-        font-size: 1.8rem !important;
+        font-size: 0.9rem !important; /* Texto pequeño y elegante */
         margin: 0 !important;
         line-height: 1 !important;
         text-align: center !important;
     }
 
-    /* Forzar tamaño del emoji (primera línea del botón) */
+    /* ICONOS (Emoji) a la mitad */
     div[data-testid="stButton"] button p::first-line {
-        font-size: 9rem !important; /* ICONOS REALMENTE GIGANTES */
-        line-height: 1.5 !important;
+        font-size: 4.5rem !important; /* Icono grande pero manejable */
+        line-height: 1.3 !important;
     }
 
-    /* ASIGNACIÓN DE COLORES PASTEL (Por posición de columna) */
-    /* Fila 1 */
+    /* COLORES PASTEL (Se mantienen) */
     div[data-testid="column"]:nth-of-type(1) button { background-color: #FFFBEB !important; color: #D97706 !important; }
     div[data-testid="column"]:nth-of-type(2) button { background-color: #EFF6FF !important; color: #2563EB !important; }
     div[data-testid="column"]:nth-of-type(3) button { background-color: #F0FDF4 !important; color: #16A34A !important; }
     div[data-testid="column"]:nth-of-type(4) button { background-color: #F5F3FF !important; color: #7C3AED !important; }
-    /* Fila 2 */
     div[data-testid="column"]:nth-of-type(5) button { background-color: #FDF2F8 !important; color: #DB2777 !important; }
     div[data-testid="column"]:nth-of-type(6) button { background-color: #FEF2F2 !important; color: #DC2626 !important; }
     div[data-testid="column"]:nth-of-type(7) button { background-color: #F8FAFC !important; color: #475569 !important; }
     div[data-testid="column"]:nth-of-type(8) button { background-color: #EEF2FF !important; color: #4F46E5 !important; }
 
-    /* Navegación Elegante (Pills) */
+    /* Navegación Compacta */
     .nav-zone div[data-testid="stButton"] button {
         height: auto !important;
-        border-radius: 100px !important;
-        border: 2px solid #1A1A1A !important;
+        border-radius: 50px !important;
+        border: 1.5px solid #1A1A1A !important;
         background: white !important;
         color: #1A1A1A !important;
         font-weight: 800 !important;
-        padding: 0.8rem 3rem !important;
-        text-transform: uppercase !important;
-        letter-spacing: 0.1em !important;
+        padding: 0.4rem 1.5rem !important;
+        font-size: 0.8rem !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -140,13 +136,13 @@ def reset_db():
 col_logo, col_text = st.columns([1, 4])
 with col_logo:
     if os.path.exists("logo.png"):
-        st.image("logo.png", width=220)
+        st.image("logo.png", width=120)
     else:
-        st.markdown('<div style="width:220px;height:220px;background:#eee;border-radius:50px;"></div>', unsafe_allow_html=True)
+        st.markdown('<div style="width:120px;height:120px;background:#eee;border-radius:30px;"></div>', unsafe_allow_html=True)
 
 with col_text:
     st.markdown('<h1 class="main-title">Emocionómetro</h1>', unsafe_allow_html=True)
-    st.markdown('<p style="font-size:2.2rem; font-weight:700; color:#4A4A4A; margin:0;">Día de la Educación Física en la Calle</p>', unsafe_allow_html=True)
+    st.markdown('<p style="font-size:1.2rem; font-weight:700; color:#4A4A4A; margin:0;">Día de la Educación Física en la Calle</p>', unsafe_allow_html=True)
     st.markdown('<div class="slogan-text">"Moviendo cuerpos, conectando mentes. La calle es salud mental en movimiento"</div>', unsafe_allow_html=True)
 
 # 5. Navegación
@@ -167,7 +163,7 @@ st.markdown('</div>', unsafe_allow_html=True)
 
 # 6. VISTA: VOTACIÓN
 if st.session_state.page == 'votar':
-    st.markdown('<h2 style="font-weight:900; font-size:4rem; margin: 4rem 0 3rem 0; letter-spacing:-0.06em; color:#1A1A1A;">¿Cómo te sientes hoy?</h2>', unsafe_allow_html=True)
+    st.markdown('<h2 style="font-weight:900; font-size:2rem; margin: 2rem 0 1.5rem 0; letter-spacing:-0.05em; color:#1A1A1A;">¿Cómo te sientes hoy?</h2>', unsafe_allow_html=True)
     
     emociones = [
         {"id": "feliz", "label": "Feliz", "icon": "😊"},
@@ -183,7 +179,6 @@ if st.session_state.page == 'votar':
     cols = st.columns(4)
     for i, emo in enumerate(emociones):
         with cols[i % 4]:
-            # El salto de línea \n es vital para que el CSS separe icono de texto
             if st.button(f"{emo['icon']}\n{emo['label']}", key=f"v_{emo['id']}"):
                 add_vote(emo['id'])
                 st.balloons()
@@ -197,10 +192,10 @@ else:
     total = df['conteo'].sum() if not df.empty else 0
     
     st.markdown(f"""
-        <div style="background:white; border-radius:4rem; padding:5rem; box-shadow:0 40px 100px rgba(0,0,0,0.08); border:1px solid rgba(0,0,0,0.05);">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5rem;">
-                <h2 style="font-weight:900; font-size:5rem; margin:0; letter-spacing:-0.07em; color:#1A1A1A;">Marcador General</h2>
-                <div style="background:#1A1A1A; color:white; padding:1.5rem 4rem; border-radius:3rem; font-weight:900; font-size:3rem;">
+        <div style="background:white; border-radius:2rem; padding:2.5rem; box-shadow:0 20px 40px rgba(0,0,0,0.05); border:1px solid rgba(0,0,0,0.05);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2.5rem;">
+                <h2 style="font-weight:900; font-size:2.5rem; margin:0; letter-spacing:-0.06em; color:#1A1A1A;">Marcador General</h2>
+                <div style="background:#1A1A1A; color:white; padding:0.8rem 2rem; border-radius:1.5rem; font-weight:900; font-size:1.5rem;">
                     TOTAL: {total}
                 </div>
             </div>
@@ -209,7 +204,7 @@ else:
     if not df.empty:
         st.bar_chart(df.set_index('emocion')['conteo'], color="#1A1A1A")
     else:
-        st.markdown("<p style='text-align:center; opacity:0.4; font-size:3rem; padding:12rem;'>Aún no hay votos.</p>", unsafe_allow_html=True)
+        st.markdown("<p style='text-align:center; opacity:0.4; font-size:1.5rem; padding:5rem;'>Aún no hay votos.</p>", unsafe_allow_html=True)
     
     st.markdown("</div>", unsafe_allow_html=True)
 
@@ -224,8 +219,8 @@ with st.expander("🛠️ CONFIGURACIÓN"):
 
 # 9. Footer
 st.markdown(f"""
-<div style="text-align:center; padding:12rem 2rem; border-top:1px solid rgba(0,0,0,0.05); margin-top:12rem; font-size:1.2rem; font-weight:800; text-transform:uppercase; letter-spacing:0.5em; opacity:0.4; color:#1A1A1A;">
+<div style="text-align:center; padding:5rem 2rem; border-top:1px solid rgba(0,0,0,0.05); margin-top:5rem; font-size:0.8rem; font-weight:800; text-transform:uppercase; letter-spacing:0.3em; opacity:0.4; color:#1A1A1A;">
     © 2026 Día de la Educación Física en la Calle <br>
-    <span style="color:#4A4A4A; font-size:1.1rem;">(Dpto. de EF del IES Lucía de Medrano)</span>
+    <span style="color:#4A4A4A; font-size:0.7rem;">(Dpto. de EF del IES Lucía de Medrano)</span>
 </div>
 """, unsafe_allow_html=True)
