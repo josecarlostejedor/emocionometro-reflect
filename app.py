@@ -251,15 +251,14 @@ else:
     }
 
     # Construir el HTML de resultados
-    results_html = f"""
-        <div class="results-card">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2.5rem; flex-wrap: wrap; gap: 1rem;">
-                <h2 style="font-weight:900; font-size:1.8rem; margin:0; letter-spacing:-0.05em; color:#2D2D2D; text-transform:uppercase;">Marcador General</h2>
-                <div style="background:#1A1A1A; color:white; padding:0.5rem 1.2rem; border-radius:1rem; font-weight:900; font-size:1.2rem;">
-                    TOTAL: {total}
-                </div>
-            </div>
-    """
+    results_html = f"""<div class="results-card">
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2.5rem; flex-wrap: wrap; gap: 1rem;">
+<h2 style="font-weight:900; font-size:1.8rem; margin:0; letter-spacing:-0.05em; color:#2D2D2D; text-transform:uppercase;">Marcador General</h2>
+<div style="background:#1A1A1A; color:white; padding:0.5rem 1.2rem; border-radius:1rem; font-weight:900; font-size:1.2rem;">
+TOTAL: {total}
+</div>
+</div>
+"""
     
     if not df.empty:
         emociones_ref = {
@@ -277,17 +276,16 @@ else:
             color = color_map.get(emo_id, "#2D2D2D")
             pct = int((row['conteo'] / total) * 100) if total > 0 else 0
             
-            results_html += f"""
-                <div style="margin-bottom:1.5rem;">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem; font-weight:800; font-size:0.85rem; text-transform:uppercase; color:#4A4A4A;">
-                        <span>{label}</span>
-                        <span>{pct}% ({row['conteo']})</span>
-                    </div>
-                    <div style="background:rgba(0,0,0,0.05); height:14px; border-radius:20px; overflow:hidden; border:1px solid rgba(0,0,0,0.02);">
-                        <div style="background:{color}; width:{pct}%; height:100%; border-radius:20px; transition: width 1s ease-in-out;"></div>
-                    </div>
-                </div>
-            """
+            results_html += f"""<div style="margin-bottom:1.5rem;">
+<div style="display:flex; justify-content:space-between; margin-bottom:0.5rem; font-weight:800; font-size:0.85rem; text-transform:uppercase; color:#4A4A4A;">
+<span>{label}</span>
+<span>{pct}% ({row['conteo']})</span>
+</div>
+<div style="background:rgba(0,0,0,0.05); height:14px; border-radius:20px; overflow:hidden; border:1px solid rgba(0,0,0,0.02);">
+<div style="background:{color}; width:{pct}%; height:100%; border-radius:20px; transition: width 1s ease-in-out;"></div>
+</div>
+</div>
+"""
     else:
         results_html += "<p style='text-align:center; opacity:0.4; font-size:1.2rem; padding:3rem; color:#2D2D2D;'>Aún no hay votos. ¡Sé el primero!</p>"
     
