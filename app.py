@@ -11,100 +11,140 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# 2. CSS DE PRECISIÓN (Tamaño optimizado para móvil)
+# 2. CSS Maestro: Específico y Elegante (Optimizado para Móvil)
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700;900&display=swap');
 
-    /* Fondo Limpio */
-    .stApp { background-color: #FAFAFA !important; }
+    /* Fondo Espectacular con Blobs Animados */
+    .stApp {
+        background-color: #FAFAFA !important;
+        background-image: 
+            radial-gradient(circle at 5% 5%, rgba(0, 174, 239, 0.1) 0%, transparent 35%),
+            radial-gradient(circle at 95% 20%, rgba(236, 0, 140, 0.1) 0%, transparent 35%),
+            radial-gradient(circle at 15% 90%, rgba(141, 198, 63, 0.1) 0%, transparent 35%),
+            radial-gradient(circle at 85% 85%, rgba(249, 212, 35, 0.1) 0%, transparent 35%) !important;
+        background-attachment: fixed !important;
+    }
 
-    /* Ocultar basura de Streamlit */
-    header, footer, .stDeployButton {display:none !important;}
-    .block-container {padding: 1.5rem 2rem !important;} /* Reducido padding lateral */
+    /* Ocultar elementos innecesarios de Streamlit */
+    #MainMenu, footer, header {visibility: hidden;}
+    .stDeployButton {display:none;}
+    
+    /* Contenedor principal */
+    .block-container {
+        padding: 2rem 1rem !important;
+        max-width: 1200px !important;
+    }
 
-    /* TÍTULO (Tamaño reducido a la mitad) */
+    /* Tipografía */
     .main-title {
         font-family: 'Inter', sans-serif;
-        font-size: 3rem !important; 
-        font-weight: 900 !important;
-        text-transform: uppercase !important;
-        letter-spacing: -0.05em !important;
-        color: #1A1A1A !important;
-        margin: 0 !important;
-        line-height: 1 !important;
+        font-size: clamp(2rem, 6vw, 3rem);
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: -0.05em;
+        line-height: 1;
+        color: #2D2D2D;
+        margin-bottom: 0.5rem;
+        white-space: nowrap !important;
     }
 
-    /* LEMA (Tamaño reducido a la mitad) */
-    .slogan-text {
-        font-family: 'Libre Baskerville', serif !important;
-        font-size: 1.7rem !important; 
-        font-weight: 700 !important;
-        line-height: 1.2 !important;
-        color: #1A1A1A !important;
-        margin: 1rem 0 2.5rem 0 !important;
+    .slogan {
+        font-family: 'Libre Baskerville', serif;
         font-style: italic;
-        border-left: 6px solid #ec008c;
-        padding-left: 1.5rem;
+        color: #4A4A4A;
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
     }
 
-    /* --- TARJETAS DE EMOCIÓN (TAMAÑO MITAD) --- */
-    div[data-testid="stButton"] button {
-        height: 170px !important; /* Altura reducida a la mitad */
+    /* --- NAVEGACIÓN ELEGANTE --- */
+    .nav-container [data-testid="stButton"] button {
+        background: rgba(255, 255, 255, 0.5) !important;
+        backdrop-filter: blur(10px) !important;
+        border: 1px solid rgba(0, 0, 0, 0.1) !important;
+        border-radius: 100px !important;
+        padding: 0.4rem 1.2rem !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.05em !important;
+        color: #2D2D2D !important;
+        font-size: 0.8rem !important;
+        transition: all 0.3s ease !important;
+    }
+
+    .nav-container [data-testid="stButton"] button:hover {
+        background: #2D2D2D !important;
+        color: white !important;
+        border-color: #2D2D2D !important;
+    }
+
+    /* --- ESTILO ESPECÍFICO PARA BOTONES DE EMOCIÓN --- */
+    #emotion-zone [data-testid="stButton"] button {
+        background: rgba(255, 255, 255, 0.6) !important;
+        backdrop-filter: blur(12px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.8) !important;
+        border-radius: 2rem !important;
+        height: 140px !important;
         width: 100% !important;
-        border-radius: 25px !important;
-        border: none !important;
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
         justify-content: center !important;
-        transition: all 0.4s ease !important;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.03) !important;
-        padding: 0 !important;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.03) !important;
+        padding: 1rem !important;
     }
 
-    div[data-testid="stButton"] button:hover {
+    #emotion-zone [data-testid="stButton"] button:hover {
         transform: translateY(-8px) !important;
+        background: white !important;
         box-shadow: 0 20px 40px rgba(0,0,0,0.08) !important;
     }
 
-    /* Texto e ICONOS (Tamaño reducido a la mitad) */
-    div[data-testid="stButton"] button p {
-        font-family: 'Libre Baskerville', serif !important;
+    /* Hacer los iconos (emojis) más grandes y uniformes */
+    #emotion-zone [data-testid="stButton"] button p {
+        font-family: 'Inter', sans-serif !important;
         font-weight: 700 !important;
         text-transform: uppercase !important;
-        font-size: 0.9rem !important; /* Texto pequeño y elegante */
-        margin: 0 !important;
-        line-height: 1 !important;
-        text-align: center !important;
-    }
-
-    /* ICONOS (Emoji) a la mitad */
-    div[data-testid="stButton"] button p::first-line {
-        font-size: 4.5rem !important; /* Icono grande pero manejable */
-        line-height: 1.3 !important;
-    }
-
-    /* COLORES PASTEL (Se mantienen) */
-    div[data-testid="column"]:nth-of-type(1) button { background-color: #FFFBEB !important; color: #D97706 !important; }
-    div[data-testid="column"]:nth-of-type(2) button { background-color: #EFF6FF !important; color: #2563EB !important; }
-    div[data-testid="column"]:nth-of-type(3) button { background-color: #F0FDF4 !important; color: #16A34A !important; }
-    div[data-testid="column"]:nth-of-type(4) button { background-color: #F5F3FF !important; color: #7C3AED !important; }
-    div[data-testid="column"]:nth-of-type(5) button { background-color: #FDF2F8 !important; color: #DB2777 !important; }
-    div[data-testid="column"]:nth-of-type(6) button { background-color: #FEF2F2 !important; color: #DC2626 !important; }
-    div[data-testid="column"]:nth-of-type(7) button { background-color: #F8FAFC !important; color: #475569 !important; }
-    div[data-testid="column"]:nth-of-type(8) button { background-color: #EEF2FF !important; color: #4F46E5 !important; }
-
-    /* Navegación Compacta */
-    .nav-zone div[data-testid="stButton"] button {
-        height: auto !important;
-        border-radius: 50px !important;
-        border: 1.5px solid #1A1A1A !important;
-        background: white !important;
+        letter-spacing: 0.02em !important;
         color: #1A1A1A !important;
-        font-weight: 800 !important;
-        padding: 0.4rem 1.5rem !important;
+        line-height: 1.2 !important;
+        white-space: pre-line !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        font-size: 0.85rem !important;
+        width: 100% !important;
+    }
+
+    /* Truco para agrandar solo el emoji (primera línea) */
+    #emotion-zone [data-testid="stButton"] button p::first-line {
+        font-size: 2.5rem !important;
+    }
+
+    /* --- FIX PARA EL EXPANDER (CONFIGURACIÓN) --- */
+    .stExpander {
+        background: rgba(255, 255, 255, 0.2) !important;
+        border-radius: 1rem !important;
+        border: 1px solid rgba(0,0,0,0.05) !important;
+        margin-top: 4rem !important;
+    }
+    
+    .stExpander [data-testid="stExpanderHeader"] {
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.1em !important;
         font-size: 0.8rem !important;
+    }
+
+    /* Resultados Card */
+    .results-card {
+        background: rgba(255, 255, 255, 0.75);
+        backdrop-filter: blur(20px);
+        border-radius: 2.5rem;
+        padding: 2rem;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.05);
     }
 </style>
 """, unsafe_allow_html=True)
@@ -133,37 +173,39 @@ def reset_db():
     conn.close()
 
 # 4. Cabecera
-col_logo, col_text = st.columns([1, 4])
-with col_logo:
+col_l, col_r = st.columns([1, 4])
+with col_l:
     if os.path.exists("logo.png"):
-        st.image("logo.png", width=120)
+        st.image("logo.png", use_container_width=True)
     else:
-        st.markdown('<div style="width:120px;height:120px;background:#eee;border-radius:30px;"></div>', unsafe_allow_html=True)
+        st.markdown('<div style="width:100px;height:100px;background:rgba(0,0,0,0.05);border-radius:25px;display:flex;align-items:center;justify-content:center;font-size:0.7rem;color:gray;">LOGO</div>', unsafe_allow_html=True)
 
-with col_text:
+with col_r:
     st.markdown('<h1 class="main-title">Emocionómetro</h1>', unsafe_allow_html=True)
-    st.markdown('<p style="font-size:1.2rem; font-weight:700; color:#4A4A4A; margin:0;">Día de la Educación Física en la Calle</p>', unsafe_allow_html=True)
-    st.markdown('<div class="slogan-text">"Moviendo cuerpos, conectando mentes. La calle es salud mental en movimiento"</div>', unsafe_allow_html=True)
+    st.markdown('<p style="font-size:1.2rem; font-weight:700; margin:0; opacity:0.8;">Día de la Educación Física en la Calle</p>', unsafe_allow_html=True)
+    st.markdown('<p class="slogan">"Moviendo cuerpos, conectando mentes. La calle es salud mental en movimiento"</p>', unsafe_allow_html=True)
 
 # 5. Navegación
 if 'page' not in st.session_state:
     st.session_state.page = 'votar'
 
-st.markdown('<div class="nav-zone">', unsafe_allow_html=True)
-_, c_nav1, c_nav2 = st.columns([6, 2, 2])
+st.markdown('<div class="nav-container">', unsafe_allow_html=True)
+c_nav1, c_nav2 = st.columns([1, 1])
 with c_nav1:
-    if st.button("📊 RESULTADOS", key="nav_res"): 
+    if st.button("📊 RESULTADOS", key="nav_res", use_container_width=True): 
         st.session_state.page = 'resultados'
         st.rerun()
 with c_nav2:
-    if st.button("🗳️ VOTAR", key="nav_vot"): 
+    if st.button("🗳️ VOTAR", key="nav_vot", use_container_width=True): 
         st.session_state.page = 'votar'
         st.rerun()
 st.markdown('</div>', unsafe_allow_html=True)
 
 # 6. VISTA: VOTACIÓN
 if st.session_state.page == 'votar':
-    st.markdown('<h2 style="font-weight:900; font-size:2rem; margin: 2rem 0 1.5rem 0; letter-spacing:-0.05em; color:#1A1A1A;">¿Cómo te sientes hoy?</h2>', unsafe_allow_html=True)
+    st.markdown('<h2 style="font-weight:900; font-size:2rem; margin:2rem 0; letter-spacing:-0.04em; color:#2D2D2D;">¿Cómo te sientes hoy?</h2>', unsafe_allow_html=True)
+    
+    st.markdown('<div id="emotion-zone">', unsafe_allow_html=True)
     
     emociones = [
         {"id": "feliz", "label": "Feliz", "icon": "😊"},
@@ -176,14 +218,17 @@ if st.session_state.page == 'votar':
         {"id": "triste", "label": "Triste", "icon": "😢"},
     ]
 
-    cols = st.columns(4)
+    # Grid de 2 columnas para móvil
+    cols = st.columns(2)
     for i, emo in enumerate(emociones):
-        with cols[i % 4]:
+        with cols[i % 2]:
             if st.button(f"{emo['icon']}\n{emo['label']}", key=f"v_{emo['id']}"):
                 add_vote(emo['id'])
                 st.balloons()
                 st.session_state.page = 'resultados'
                 st.rerun()
+    
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # 7. VISTA: RESULTADOS
 else:
@@ -191,36 +236,75 @@ else:
     df = pd.read_sql_query("SELECT emocion, COUNT(*) as conteo FROM votos GROUP BY emocion", conn)
     total = df['conteo'].sum() if not df.empty else 0
     
-    st.markdown(f"""
-        <div style="background:white; border-radius:2rem; padding:2.5rem; box-shadow:0 20px 40px rgba(0,0,0,0.05); border:1px solid rgba(0,0,0,0.05);">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2.5rem;">
-                <h2 style="font-weight:900; font-size:2.5rem; margin:0; letter-spacing:-0.06em; color:#1A1A1A;">Marcador General</h2>
-                <div style="background:#1A1A1A; color:white; padding:0.8rem 2rem; border-radius:1.5rem; font-weight:900; font-size:1.5rem;">
+    color_map = {
+        "feliz": "#FFD93D",
+        "entusiasmado": "#FF8400",
+        "orgulloso": "#4D96FF",
+        "motivado": "#6BCB77",
+        "agradecido": "#FF6B6B",
+        "cansado": "#FF4C29",
+        "aburrido": "#94A3B8",
+        "triste": "#5F9DF7"
+    }
+
+    # Construir el HTML de resultados de forma consolidada
+    results_html = f"""
+        <div class="results-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem; flex-wrap: wrap; gap: 1rem;">
+                <h2 style="font-weight:900; font-size:1.8rem; margin:0; letter-spacing:-0.05em; color:#2D2D2D; white-space: nowrap;">Marcador General</h2>
+                <div style="background:#1A1A1A; color:white; padding:0.5rem 1.2rem; border-radius:1rem; font-weight:900; font-size:1.2rem;">
                     TOTAL: {total}
                 </div>
             </div>
-    """, unsafe_allow_html=True)
+    """
     
     if not df.empty:
-        st.bar_chart(df.set_index('emocion')['conteo'], color="#1A1A1A")
+        # Lista de emociones para referencia de labels
+        emociones_ref = [
+            {"id": "feliz", "label": "Feliz"},
+            {"id": "entusiasmado", "label": "Entusiasmado"},
+            {"id": "orgulloso", "label": "Orgulloso"},
+            {"id": "motivado", "label": "Motivado"},
+            {"id": "agradecido", "label": "Agradecido"},
+            {"id": "cansado", "label": "Cansado"},
+            {"id": "aburrido", "label": "Aburrido"},
+            {"id": "triste", "label": "Triste"},
+        ]
+
+        for _, row in df.iterrows():
+            emo_id = row['emocion']
+            label = next((e['label'] for e in emociones_ref if e['id'] == emo_id), emo_id)
+            color = color_map.get(emo_id, "#2D2D2D")
+            pct = int((row['conteo'] / total) * 100)
+            
+            results_html += f"""
+                <div style="display:flex; align-items:center; gap:1rem; margin-bottom:1rem; background:rgba(255,255,255,0.4); padding:1rem; border-radius:1.5rem; border: 1px solid rgba(0,0,0,0.05);">
+                    <div style="font-weight:900; font-size:0.9rem; width:120px; text-transform:uppercase; letter-spacing:0.05em; color:#2D2D2D;">{label}</div>
+                    <div style="flex:1; background:rgba(0,0,0,0.05); height:12px; border-radius:10px; overflow:hidden;">
+                        <div style="background:{color}; width:{pct}%; height:100%; border-radius:10px;"></div>
+                    </div>
+                    <div style="font-weight:900; width:50px; font-size:1rem; color:#2D2D2D; text-align:right;">{pct}%</div>
+                </div>
+            """
     else:
-        st.markdown("<p style='text-align:center; opacity:0.4; font-size:1.5rem; padding:5rem;'>Aún no hay votos.</p>", unsafe_allow_html=True)
+        results_html += "<p style='text-align:center; opacity:0.4; font-size:1.2rem; padding:3rem; color:#2D2D2D;'>Aún no hay votos. ¡Sé el primero!</p>"
     
-    st.markdown("</div>", unsafe_allow_html=True)
+    results_html += "</div>"
+    st.markdown(results_html, unsafe_allow_html=True)
 
 # 8. Administración
 st.markdown("<br>", unsafe_allow_html=True)
 with st.expander("🛠️ CONFIGURACIÓN"):
-    pwd = st.text_input("Contraseña", type="password")
+    pwd = st.text_input("Contraseña de administrador", type="password")
     if pwd == "1234":
-        if st.button("⚠️ REINICIAR"):
+        if st.button("⚠️ REINICIAR MARCADOR"):
             reset_db()
             st.rerun()
 
 # 9. Footer
 st.markdown(f"""
-<div style="text-align:center; padding:5rem 2rem; border-top:1px solid rgba(0,0,0,0.05); margin-top:5rem; font-size:0.8rem; font-weight:800; text-transform:uppercase; letter-spacing:0.3em; opacity:0.4; color:#1A1A1A;">
-    © 2026 Día de la Educación Física en la Calle <br>
-    <span style="color:#4A4A4A; font-size:0.7rem;">(Dpto. de EF del IES Lucía de Medrano)</span>
+<div style="text-align:center; padding:4rem 1rem; border-top:1px solid rgba(0,0,0,0.05); margin-top:4rem; font-size:0.75rem; font-weight:800; text-transform:uppercase; letter-spacing:0.15em; opacity:0.4; color:#2D2D2D;">
+    © 2026 Día de la Educación Física en la Calle • Construido con Pasión <br>
+    <span style="color:#4A4A4A; font-size:0.65rem;">(Dpto. de EF del IES Lucía de Medrano)</span>
 </div>
 """, unsafe_allow_html=True)
