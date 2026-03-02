@@ -11,17 +11,17 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# 2. CSS MAESTRO: Estilo "Bento Grid" de la Preview
+# 2. CSS NUCLEAR: Forzando el diseño sobre Streamlit
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;600;700;900&display=swap');
 
-    /* Fondo con gradientes suaves */
+    /* Fondo Espectacular */
     .stApp {
         background-color: #FAFAFA !important;
         background-image: 
-            radial-gradient(circle at 5% 5%, rgba(0, 174, 239, 0.05) 0%, transparent 40%),
-            radial-gradient(circle at 95% 20%, rgba(236, 0, 140, 0.05) 0%, transparent 40%) !important;
+            radial-gradient(circle at 10% 10%, rgba(0, 174, 239, 0.05) 0%, transparent 40%),
+            radial-gradient(circle at 90% 10%, rgba(236, 0, 140, 0.05) 0%, transparent 40%) !important;
         background-attachment: fixed !important;
     }
 
@@ -30,13 +30,13 @@ st.markdown("""
     .stDeployButton {display:none;}
     .block-container {padding: 3rem 6rem !important;}
 
-    /* Títulos y LEMA PROTAGONISTA */
+    /* Títulos y LEMA GIGANTE */
     .main-title {
         font-family: 'Inter', sans-serif;
-        font-size: 5rem !important;
+        font-size: 5.5rem !important;
         font-weight: 900 !important;
         text-transform: uppercase !important;
-        letter-spacing: -0.05em !important;
+        letter-spacing: -0.06em !important;
         color: #1A1A1A !important;
         margin: 0 !important;
     }
@@ -45,84 +45,88 @@ st.markdown("""
         font-family: 'Libre Baskerville', serif !important;
         font-style: italic !important;
         color: #1A1A1A !important;
-        font-size: 2.5rem !important; /* LEMA MUCHO MÁS GRANDE */
+        font-size: 2.8rem !important; /* LEMA MUCHO MÁS GRANDE */
         font-weight: 400 !important;
-        margin: 2rem 0 4rem 0 !important;
-        line-height: 1.2 !important;
-        opacity: 0.9;
+        margin: 2.5rem 0 5rem 0 !important;
+        line-height: 1.1 !important;
+        opacity: 0.95;
     }
 
     /* --- NAVEGACIÓN --- */
     .nav-zone [data-testid="stButton"] button {
         background: white !important;
         border: 1px solid rgba(0,0,0,0.1) !important;
-        border-radius: 12px !important;
-        padding: 0.5rem 1.5rem !important;
-        font-weight: 600 !important;
-        color: #4A4A4A !important;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
+        border-radius: 15px !important;
+        padding: 0.6rem 2rem !important;
+        font-weight: 700 !important;
+        color: #1A1A1A !important;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.02) !important;
     }
 
-    /* --- TARJETAS DE EMOCIÓN (ESTILO PREVIEW) --- */
-    .emotion-zone [data-testid="stButton"] button {
+    /* --- TARJETAS DE EMOCIÓN (ESTILO BENTO GRID) --- */
+    /* Forzamos que todos los botones de la zona de emociones sean iguales */
+    #emotion-zone [data-testid="stButton"] {
+        width: 100% !important;
+    }
+
+    #emotion-zone [data-testid="stButton"] button {
         border: none !important;
-        border-radius: 2.5rem !important;
-        height: 280px !important; /* Altura fija */
+        border-radius: 3rem !important;
+        height: 320px !important; /* Altura fija y grande */
         width: 100% !important;
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;
         justify-content: center !important;
-        transition: all 0.3s ease !important;
-        padding: 2rem !important;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.02) !important;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+        padding: 0 !important;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.03) !important;
     }
 
-    .emotion-zone [data-testid="stButton"] button:hover {
-        transform: scale(1.02) !important;
-        box-shadow: 0 15px 30px rgba(0,0,0,0.08) !important;
+    #emotion-zone [data-testid="stButton"] button:hover {
+        transform: translateY(-15px) scale(1.02) !important;
+        box-shadow: 0 30px 60px rgba(0,0,0,0.1) !important;
     }
 
     /* Texto e iconos dentro de la tarjeta */
-    .emotion-zone [data-testid="stButton"] button p {
+    #emotion-zone [data-testid="stButton"] button div[data-testid="stMarkdownContainer"] p {
         font-family: 'Libre Baskerville', serif !important;
         font-weight: 700 !important;
         text-transform: uppercase !important;
-        letter-spacing: 0.05em !important;
-        font-size: 1.4rem !important;
-        margin-top: 20px !important;
-    }
-
-    /* Iconos Gigantes */
-    .emotion-zone [data-testid="stButton"] button p::first-line {
-        font-size: 5rem !important;
+        letter-spacing: 0.08em !important;
+        font-size: 1.5rem !important;
+        margin: 0 !important;
         line-height: 1.2 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
     }
 
-    /* COLORES DE LAS TARJETAS (Igual que la preview) */
-    /* Feliz */
-    .emotion-zone div:nth-child(1) [data-testid="stButton"] button { background: #FFFBEB !important; color: #D97706 !important; }
-    /* Entusiasmado */
-    .emotion-zone div:nth-child(2) [data-testid="stButton"] button { background: #EFF6FF !important; color: #2563EB !important; }
-    /* Orgulloso */
-    .emotion-zone div:nth-child(3) [data-testid="stButton"] button { background: #F0FDF4 !important; color: #16A34A !important; }
-    /* Motivado */
-    .emotion-zone div:nth-child(4) [data-testid="stButton"] button { background: #F5F3FF !important; color: #7C3AED !important; }
-    /* Agradecido */
-    .emotion-zone div:nth-child(5) [data-testid="stButton"] button { background: #FDF2F8 !important; color: #DB2777 !important; }
-    /* Cansado */
-    .emotion-zone div:nth-child(6) [data-testid="stButton"] button { background: #FEF2F2 !important; color: #DC2626 !important; }
-    /* Aburrido */
-    .emotion-zone div:nth-child(7) [data-testid="stButton"] button { background: #F8FAFC !important; color: #475569 !important; }
-    /* Triste */
-    .emotion-zone div:nth-child(8) [data-testid="stButton"] button { background: #EEF2FF !important; color: #4F46E5 !important; }
+    /* ICONOS GIGANTES (Forzados) */
+    #emotion-zone [data-testid="stButton"] button p::first-line {
+        font-size: 7rem !important; /* ICONOS REALMENTE GRANDES */
+        line-height: 1.4 !important;
+    }
 
-    /* Resultados */
+    /* COLORES DE LAS TARJETAS (Asignación por orden) */
+    #emotion-zone div[data-testid="column"]:nth-child(1) button { background: #FFFBEB !important; color: #D97706 !important; }
+    #emotion-zone div[data-testid="column"]:nth-child(2) button { background: #EFF6FF !important; color: #2563EB !important; }
+    #emotion-zone div[data-testid="column"]:nth-child(3) button { background: #F0FDF4 !important; color: #16A34A !important; }
+    #emotion-zone div[data-testid="column"]:nth-child(4) button { background: #F5F3FF !important; color: #7C3AED !important; }
+    
+    /* Segunda fila (Streamlit las numera globalmente en el grid) */
+    #emotion-zone div[data-testid="column"]:nth-child(5) button { background: #FDF2F8 !important; color: #DB2777 !important; }
+    #emotion-zone div[data-testid="column"]:nth-child(6) button { background: #FEF2F2 !important; color: #DC2626 !important; }
+    #emotion-zone div[data-testid="column"]:nth-child(7) button { background: #F8FAFC !important; color: #475569 !important; }
+    #emotion-zone div[data-testid="column"]:nth-child(8) button { background: #EEF2FF !important; color: #4F46E5 !important; }
+
+    /* Resultados Card */
     .results-card {
         background: white;
-        border-radius: 3rem;
-        padding: 4rem;
-        box-shadow: 0 20px 50px rgba(0,0,0,0.05);
+        border-radius: 4rem;
+        padding: 5rem;
+        box-shadow: 0 40px 100px rgba(0,0,0,0.08);
         border: 1px solid rgba(0,0,0,0.05);
     }
 </style>
@@ -157,11 +161,11 @@ with col_logo:
     if os.path.exists("logo.png"):
         st.image("logo.png", use_container_width=True)
     else:
-        st.markdown('<div style="width:150px;height:150px;background:#eee;border-radius:40px;"></div>', unsafe_allow_html=True)
+        st.markdown('<div style="width:180px;height:180px;background:#eee;border-radius:50px;"></div>', unsafe_allow_html=True)
 
 with col_text:
     st.markdown('<h1 class="main-title">Emocionómetro</h1>', unsafe_allow_html=True)
-    st.markdown('<p style="font-size:1.8rem; font-weight:700; color:#4A4A4A; margin:0;">Día de la Educación Física en la Calle</p>', unsafe_allow_html=True)
+    st.markdown('<p style="font-size:2.2rem; font-weight:700; color:#4A4A4A; margin:0;">Día de la Educación Física en la Calle</p>', unsafe_allow_html=True)
     st.markdown('<div class="slogan-box">"Moviendo cuerpos, conectando mentes. La calle es salud mental en movimiento"</div>', unsafe_allow_html=True)
 
 # 5. Navegación
@@ -169,7 +173,7 @@ if 'page' not in st.session_state:
     st.session_state.page = 'votar'
 
 st.markdown('<div class="nav-zone">', unsafe_allow_html=True)
-_, c_nav1, c_nav2 = st.columns([6, 1.5, 1.5])
+_, c_nav1, c_nav2 = st.columns([6, 1.8, 1.8])
 with c_nav1:
     if st.button("📊 RESULTADOS", key="nav_res"): 
         st.session_state.page = 'resultados'
@@ -182,9 +186,10 @@ st.markdown('</div>', unsafe_allow_html=True)
 
 # 6. VISTA: VOTACIÓN
 if st.session_state.page == 'votar':
-    st.markdown('<h2 style="font-weight:900; font-size:3rem; margin: 2rem 0; letter-spacing:-0.05em; color:#1A1A1A;">¿Cómo te sientes hoy?</h2>', unsafe_allow_html=True)
+    st.markdown('<h2 style="font-weight:900; font-size:3.5rem; margin: 3rem 0; letter-spacing:-0.06em; color:#1A1A1A;">¿Cómo te sientes hoy?</h2>', unsafe_allow_html=True)
     
-    st.markdown('<div class="emotion-zone">', unsafe_allow_html=True)
+    # Contenedor ID para el CSS Nuclear
+    st.markdown('<div id="emotion-zone">', unsafe_allow_html=True)
     emociones = [
         {"id": "feliz", "label": "Feliz", "icon": "😊"},
         {"id": "entusiasmado", "label": "Entusiasmado", "icon": "⚡"},
@@ -196,10 +201,10 @@ if st.session_state.page == 'votar':
         {"id": "triste", "label": "Triste", "icon": "😢"},
     ]
 
-    # Usamos un contenedor de columnas para la cuadrícula
     cols = st.columns(4)
     for i, emo in enumerate(emociones):
         with cols[i % 4]:
+            # El salto de línea \n es vital para que el CSS separe icono de texto
             if st.button(f"{emo['icon']}\n{emo['label']}", key=f"v_{emo['id']}"):
                 add_vote(emo['id'])
                 st.balloons()
@@ -215,9 +220,9 @@ else:
     
     st.markdown(f"""
         <div class="results-card">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4rem;">
-                <h2 style="font-weight:900; font-size:4rem; margin:0; letter-spacing:-0.06em; color:#1A1A1A;">Marcador General</h2>
-                <div style="background:#1A1A1A; color:white; padding:1rem 3rem; border-radius:2rem; font-weight:900; font-size:2.5rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5rem;">
+                <h2 style="font-weight:900; font-size:4.5rem; margin:0; letter-spacing:-0.07em; color:#1A1A1A;">Marcador General</h2>
+                <div style="background:#1A1A1A; color:white; padding:1.2rem 4rem; border-radius:2.5rem; font-weight:900; font-size:2.8rem;">
                     TOTAL: {total}
                 </div>
             </div>
@@ -226,7 +231,7 @@ else:
     if not df.empty:
         st.bar_chart(df.set_index('emocion')['conteo'], color="#1A1A1A")
     else:
-        st.markdown("<p style='text-align:center; opacity:0.4; font-size:2rem; padding:8rem;'>Aún no hay votos.</p>", unsafe_allow_html=True)
+        st.markdown("<p style='text-align:center; opacity:0.4; font-size:2.5rem; padding:10rem;'>Aún no hay votos.</p>", unsafe_allow_html=True)
     
     st.markdown("</div>", unsafe_allow_html=True)
 
@@ -241,8 +246,8 @@ with st.expander("🛠️ CONFIGURACIÓN"):
 
 # 9. Footer
 st.markdown(f"""
-<div style="text-align:center; padding:8rem 2rem; border-top:1px solid rgba(0,0,0,0.05); margin-top:8rem; font-size:1rem; font-weight:800; text-transform:uppercase; letter-spacing:0.3em; opacity:0.4; color:#1A1A1A;">
+<div style="text-align:center; padding:10rem 2rem; border-top:1px solid rgba(0,0,0,0.05); margin-top:10rem; font-size:1.1rem; font-weight:800; text-transform:uppercase; letter-spacing:0.4em; opacity:0.4; color:#1A1A1A;">
     © 2026 Día de la Educación Física en la Calle <br>
-    <span style="color:#4A4A4A; font-size:0.9rem;">(Dpto. de EF del IES Lucía de Medrano)</span>
+    <span style="color:#4A4A4A; font-size:1rem;">(Dpto. de EF del IES Lucía de Medrano)</span>
 </div>
 """, unsafe_allow_html=True)
